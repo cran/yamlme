@@ -2,44 +2,48 @@
 % Please edit documentation in R/write_rmd.R
 \name{write_rmd}
 \alias{write_rmd}
+\alias{write_rmd.rmd_doc}
+\alias{write_rmd,rmd_doc-method}
 \title{Writing R-Markdown Documents}
 \usage{
-write_rmd(..., append, body = "", filename)
+write_rmd(object, ...)
+
+\method{write_rmd}{rmd_doc}(object, filename, ...)
 }
 \arguments{
-\item{...}{Named arguments to be inserted in the YAML header. These arguments
-may be inserted either as vectors or lists.}
+\item{object}{\linkS4class{rmd_doc} object used to write an Rmarkdown file. If
+header is missing, \code{write_rmd()} will fail with an error message.}
 
-\item{append}{A piece of code to be appended in the header. For instance, it
-can contain commented code.}
+\item{...}{Further arguments passed among methods (not yet used).}
 
-\item{body}{The content of the document that will be inserted after the
-header.}
-
-\item{filename}{A character value with the name of the file to be written
-(usually a *.Rmd file). If missing, no file will be written by this
-function.}
+\item{filename}{A character value with the name of the file to be written.
+If not included, the extension *.Rmd will be appended to this name.
+If missing, no file will be written by this function.}
 }
 \value{
 A character vector of class \code{rmd_doc} and, if argument set for parameter
 \code{filename}, an Rmd file.
 }
 \description{
-This function generates YAML headers and R-Markdown documents by including
+This function generates R-Markdown documents by including
 the settings as arguments of the function.
 Comments and pieces of header can be also added through the argument
 \code{append}.
 }
 \examples{
 \dontrun{
-my_document <- write_rmd(
-		title = "Sample Document", author = "Miguel Alavarez",
-		output = "html_document",
-		body = txt_body(
-				"# Intro",
-				"",
-				"This is just an example."))
-my_document
+my_document <- list(
+  title = "Sample Document",
+  author = "Miguel Alavarez",
+  output = "html_document",
+  body = txt_body(
+    "# Intro",
+    "",
+    "This is just an example."
+  )
+)
+my_document <- as(my_document, "rmd_doc")
+write_rmd(my_document, filename = file.path(tempdir(), "example"))
 }
 
 }

@@ -3,20 +3,16 @@
 \name{render_rmd}
 \alias{render_rmd}
 \alias{render_rmd.character}
+\alias{render_rmd,character-method}
 \alias{render_rmd.rmd_doc}
+\alias{render_rmd,rmd_doc-method}
 \title{Render documents from object}
 \usage{
 render_rmd(input, ...)
 
 \method{render_rmd}{character}(input, ...)
 
-\method{render_rmd}{rmd_doc}(
-  input,
-  output_file,
-  temp_file = "_temp.Rmd",
-  delete_temp = TRUE,
-  ...
-)
+\method{render_rmd}{rmd_doc}(input, output_file, delete_rmd = TRUE, ...)
 }
 \arguments{
 \item{input}{Either a character value indicating the path and the name of the
@@ -26,12 +22,13 @@ r-markdown file, or an object of class \code{rmd_doc}, written by
 \item{...}{Further parameters passed to \code{\link[rmarkdown:render]{rmarkdown::render()}}.}
 
 \item{output_file}{A character value indicating the name of the output file.
-It is passed to \code{\link[rmarkdown:render]{rmarkdown::render()}}.}
+This argument is passed to \code{\link[rmarkdown:render]{rmarkdown::render()}}. Note that the argument
+only contains the name of the file without extension and can only be
+written at the working directory.}
 
-\item{temp_file}{A name for a temporary file created to render the object.}
-
-\item{delete_temp}{A logical value indicating whether \code{temp_file} should be
-deleted after rendering or not.}
+\item{delete_rmd}{A logical value idicating whether the temporary Rmd file
+should be deleted or not. If not, the file gets the same name as the
+rendered file.}
 }
 \description{
 This function is a wrapper of \code{\link[rmarkdown:render]{rmarkdown::render()}} and will also work with
@@ -42,18 +39,22 @@ by \code{\link[=write_rmd]{write_rmd()}}.
 \dontrun{
 ## copy example to your working directory
 filename <- "taxlistjourney.Rmd"
-file.copy(from=file.path(path.package("yamlme"), filename), to=filename)
+file.copy(from = file.path(path.package("yamlme"), filename), to = filename)
 
 ## Render the file with rmarkdown::render()
-render_rmd(filename, output_file="example")
+render_rmd(filename, output_file = "example")
+browseURL("example.html")
 
 ## Render the file with yamlme
 text_document <- read_rmd(filename)
 
-rmd_document <- write_rmd(title="my title", author="my name",
-    output="html_document", body=text_document)
+text_document <- update(text_document,
+  title = "my title", author = "my name",
+  output = "html_document"
+)
 
-render_rmd(rmd_document, output_file="example2")
+render_rmd(text_document, output_file = "example2")
+browseURL("example2.html")
 }
 
 }
